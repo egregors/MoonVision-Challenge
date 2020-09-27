@@ -71,8 +71,7 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    # "moon_vision_challenge.users.apps.UsersConfig",
-    # Your stuff: custom apps go here
+    "moon_vision_challenge.classification.apps.ClassificationConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

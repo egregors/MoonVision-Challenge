@@ -1,14 +1,13 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from moon_vision_challenge.classification.models import Inference
+
 User = get_user_model()
 
 
-class UserSerializer(serializers.ModelSerializer):
+class InferenceSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ["username", "email", "name", "url"]
-
-        extra_kwargs = {
-            "url": {"view_name": "api:user-detail", "lookup_field": "username"}
-        }
+        model = Inference
+        fields = ["model_type", "image", "result_label"]
+        read_only_fields = ["result_label"]

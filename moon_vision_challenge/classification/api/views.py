@@ -1,24 +1,19 @@
 from django.contrib.auth import get_user_model
-from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
-from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.permissions import AllowAny
+from rest_framework.viewsets import ModelViewSet
 
-from .serializers import UserSerializer
+from .serializers import InferenceSerializer
+from ..models import Inference
 
 User = get_user_model()
 
 
-class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
-    lookup_field = "username"
+class NaiveInferenceViewSet(ModelViewSet):
+    """ TODO: add doc """
+    serializer_class = InferenceSerializer
+    queryset = Inference.objects.all()
+    permission_classes = [AllowAny]
 
-    def get_queryset(self, *args, **kwargs):
-        return self.queryset.filter(id=self.request.user.id)
-
-    @action(detail=False, methods=["GET"])
-    def me(self, request):
-        serializer = UserSerializer(request.user, context={"request": request})
-        return Response(status=status.HTTP_200_OK, data=serializer.data)
+    def create(self, request, *args, **kwargs):
+        # TODO: straight call of keras application
+        return super().create(request, *args, **kwargs)

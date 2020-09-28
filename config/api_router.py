@@ -8,7 +8,9 @@ if settings.DEBUG:
 else:
     router = SimpleRouter()
 
-router.register("inferences", NaiveInferenceViewSet)
+router.register("v0/inferences", NaiveInferenceViewSet, basename="naive-inferences")
+# TODO:
+# router.register("v1/inferences", InferenceViewSet, basename="inferences")
 
 app_name = "api"
 urlpatterns = router.urls

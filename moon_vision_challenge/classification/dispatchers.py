@@ -17,7 +17,8 @@ class BaseClassificatorDispatcher(ABC):
 
 class DefaultClassificatorDispatcher(BaseClassificatorDispatcher):
     """ Default Dispatcher for Classificators. """
-    _classificators: Dict[str, Type[Classificator]]
+
+    _classificators: Dict[str, Type[Classificator]] = {}
 
     def __str__(self) -> str:
         return ', '.join(self._classificators)
@@ -33,6 +34,9 @@ class DefaultClassificatorDispatcher(BaseClassificatorDispatcher):
         if not classificator.model_type:
             raise ValueError('`model_type` attribute is required for all Classificators')
 
+        if not classificator.model_url:
+            raise ValueError('`model_url` attribute is required for all Classificators')
+
         if self.has_classificator(classificator.model_type):
             raise ValueError('`{0}` model type already registered'.format(classificator.model_type))
 
@@ -46,7 +50,7 @@ class DefaultClassificatorDispatcher(BaseClassificatorDispatcher):
 
     def register(self, classificator: Type[Classificator]):
         if self._classificator_is_valid(classificator):
-            logger.info('registering action `%s`', classificator.model_type)
+            logger.info('registering classificator `%s`', classificator.model_type)
             self._classificators[classificator.model_type] = classificator
 
 

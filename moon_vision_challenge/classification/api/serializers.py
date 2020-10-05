@@ -10,11 +10,11 @@ User = get_user_model()
 class NaiveInferenceSerializer(serializers.Serializer):
     model_type = serializers.ChoiceField(choices=Inference.NETWORKS.choices, required=True)
     image = serializers.FileField(required=True)
-    result_label = serializers.CharField(allow_blank=True, read_only=True)
+    label = serializers.CharField(allow_blank=True, read_only=True)
 
 
 class InferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Inference
-        fields = ["model_type", "image", "result_label"]
-        read_only_fields = ["result_label"]
+        fields = ["model_type", "image", "label"]
+        read_only_fields = ["label"]

@@ -1,6 +1,6 @@
 import logging
 from abc import ABC, abstractmethod
-from typing import Dict, Type
+from typing import Dict, Type, List
 
 from moon_vision_challenge.classification.abstract_classificator import Classificator
 
@@ -26,10 +26,6 @@ class DefaultClassificatorDispatcher(BaseClassificatorDispatcher):
     def __getitem__(self, model_type: str) -> Type[Classificator]:
         return self._classificators[model_type]
 
-    def has_classificator(self, model_type: str) -> bool:
-        """ Check if Dispatcher has handler for particular model type classificator. """
-        return model_type in self._classificators
-
     def _classificator_is_valid(self, classificator: Type[Classificator]) -> bool:
         if not classificator.model_type:
             raise ValueError('`model_type` attribute is required for all Classificators')
@@ -47,6 +43,14 @@ class DefaultClassificatorDispatcher(BaseClassificatorDispatcher):
             raise ValueError('`decode_predictions` method is required')
 
         return True
+
+    def has_classificator(self, model_type: str) -> bool:
+        """ Check if Dispatcher has handler for particular model type classificator. """
+        return model_type in self._classificators
+
+    def get_model_types(self) -> List[str]:
+        """ Get list of registred"""
+        return [model for model in self._classificators]
 
     def register(self, classificator: Type[Classificator]):
         if self._classificator_is_valid(classificator):

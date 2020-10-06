@@ -49,7 +49,7 @@ class DefaultClassificatorDispatcher(BaseClassificatorDispatcher):
         return model_type in self._classificators
 
     def get_model_types(self) -> List[str]:
-        """ Get list of registred"""
+        """ Get list of registered """
         return [model for model in self._classificators]
 
     def register(self, classificator: Type[Classificator]):

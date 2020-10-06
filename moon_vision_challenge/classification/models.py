@@ -21,8 +21,8 @@ class Inference(models.Model):
     image = models.ImageField(_("image"), help_text=_("image to classification"))
 
     status = models.CharField(_("status"), max_length=16, choices=STATUS.choices, default=STATUS.PENDING)
-    result_label = models.CharField(_("label"), max_length=255,
-                                    help_text=_("label the image was classified with"))
+    label = models.CharField(_("label"), max_length=255,
+                             help_text=_("label the image was classified with"))
 
     class Meta:
         verbose_name = _("inference")

@@ -15,7 +15,9 @@ class NaiveInferenceSerializer(serializers.Serializer):
 
 
 class InferenceSerializer(serializers.ModelSerializer):
+    model_type = serializers.ChoiceField(choices=classificators.get_model_types(), required=True)
+
     class Meta:
         model = Inference
-        fields = ["model_type", "image", "label"]
-        read_only_fields = ["label"]
+        fields = ["id", "model_type", "image", "label", "status"]
+        read_only_fields = ["id", "label", "status"]

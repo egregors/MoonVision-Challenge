@@ -1,11 +1,10 @@
 import base64
 import json
 from io import BytesIO
-from typing import Any
+from typing import Any, Dict
 
 import requests
 from PIL import Image
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from keras.utils import data_utils
 from rest_framework import status
 
@@ -24,28 +23,30 @@ class ResNetClassificator(Classificator):
 
     _resize_size = (224, 224)
 
-    def preprocess_input(self, image: InMemoryUploadedFile) -> Any:
-        pil_image: Image.Image = Image.open(image).resize(size=self._resize_size)
-
+    def preprocess_input(self, image: Image) -> Any:
         buffered = BytesIO()
-        pil_image.save(buffered, format="JPEG")
+        image.resize(size=self._resize_size).save(buffered, format="JPEG")
         b64_image = base64.b64encode(buffered.getvalue()).decode('utf-8')
-
         return b64_image
 
-    def process_prediction(self, input_vector: Any) -> Any:
+    def process_prediction(self, input_vector: Any) -> Dict:
         payload = {
             "instances": [{'b64': input_vector}]
         }
 
-        return requests.post(
-            url=self.model_url,
-            json=payload
-        )
+        r = requests.post(url=self.model_url, json=payload)
 
-    def decode_predictions(self, pred: Any) -> Any:
+        if r.status_code != status.HTTP_200_OK:
+            raise TensorFlowServingException(
+                "Wrong Response from TF-serving: %s", r.content.decode('utf-8')
+            )
+
+        return json.loads(r.content.decode('utf-8'))
+
+    def decode_predictions(self, pred: Dict) -> str:
         global IMAGENET_CLASS_INDEX
 
+        # TODO: extract to utils
         if IMAGENET_CLASS_INDEX is None:
             fpath = data_utils.get_file(
                 'imagenet_class_index.json',
@@ -55,7 +56,7 @@ class ResNetClassificator(Classificator):
             with open(fpath) as f:
                 IMAGENET_CLASS_INDEX = json.load(f)
 
-        class_ = str(json.loads(pred.content.decode('utf-8'))['predictions'][0]['classes'])
+        class_ = str(pred['predictions'][0]['classes'])
         return IMAGENET_CLASS_INDEX[class_][1]
 
 
@@ -65,15 +66,13 @@ class InceptionClassificator(Classificator):
 
     _resize_size = (224, 224)
 
-    def preprocess_input(self, image: InMemoryUploadedFile) -> Any:
-        pil_image: Image.Image = Image.open(image).resize(size=self._resize_size)
+    def preprocess_input(self, image: Image) -> Any:
         buffered = BytesIO()
-        pil_image.save(buffered, format="JPEG")
+        image.resize(size=self._resize_size).save(buffered, format="JPEG")
         b64_image = base64.b64encode(buffered.getvalue()).decode('utf-8')
-
         return b64_image
 
-    def process_prediction(self, input_vector: Any) -> Any:
+    def process_prediction(self, input_vector: Any) -> Dict:
         payload = {
             "signature_name": "predict_images",
             "instances": [{'b64': input_vector}]
@@ -84,11 +83,12 @@ class InceptionClassificator(Classificator):
         if r.status_code != status.HTTP_200_OK:
             raise TensorFlowServingException("Wrong Response from TF-serving: %s", r.content.decode('utf-8'))
 
-        return json.loads(r.content.decode('utf-8'))
+        res = json.loads(r.content.decode('utf-8'))
 
-    def decode_predictions(self, pred: Any) -> Any:
-        class_ = str(json.loads(pred.content.decode('utf-8'))['predictions'][0]['classes'])
-        return class_[0]
+        return res
+
+    def decode_predictions(self, pred: Dict) -> str:
+        return pred['predictions'][0]['classes'][0]
 
 
 classificators.register(ResNetClassificator)

@@ -1,8 +1,8 @@
 import logging
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Dict
 
-from django.core.files.uploadedfile import InMemoryUploadedFile
+from PIL.Image import Image
 
 logger = logging.getLogger(__name__)
 
@@ -19,29 +19,33 @@ class Classificator(ABC):
     model_type: str
     model_url: str
 
-    def __init__(self, image: InMemoryUploadedFile):
+    def __init__(self, image: Image):
         self.image = image
 
     @abstractmethod
-    def preprocess_input(self, image: InMemoryUploadedFile) -> Any:
+    def preprocess_input(self, image: Image) -> Any:
         """
         Convert Image to proper type according ML-model signature.
 
-        :param image: InMemoryUploadedFile object from request
+        :param image: PIL Image object
         :return: Object which expected by ML-model
         """
         raise NotImplementedError()
 
     @abstractmethod
-    def process_prediction(self, input_vector: Any) -> Any:
+    def process_prediction(self, input_vector: Any) -> Dict:
+        """
+
+        :param input_vector:
+        :return:
+        """
         raise NotImplementedError()
 
     @abstractmethod
-    def decode_predictions(self, pred: Any) -> Any:
+    def decode_predictions(self, pred: Dict) -> str:
         """
-        Decode predictions from a model, and convert it to useful type.
+        Decode predictions from a model, and convert it to string.
 
-        :rtype: Any (consumer choice)
         :return: Representation of ML-model predictions
         """
         raise NotImplementedError()

@@ -1,5 +1,3 @@
-from time import sleep
-
 from PIL import Image
 from celery import Task
 from django.contrib.auth import get_user_model

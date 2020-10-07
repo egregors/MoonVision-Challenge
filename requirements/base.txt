@@ -25,5 +25,4 @@ Keras==2.4.3
 tensorflow==2.3.0
 
 django-debug-toolbar~=3.1
-pytest~=6.0.2
 requests~=2.24.0

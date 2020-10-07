@@ -1,20 +1,16 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from moon_vision_challenge.classification.dispatchers import dispatcher as classificators
-
 
 class Inference(models.Model):
-    """ TODO: add docstring """
+    """ Persistent state for async Inferences calculation """
 
     class STATUS(models.TextChoices):
         """ Status of Inference """
-        PENDING = "pending", "waits for processing"
+        PENDING = "pending", "waiting for processing"
         PROCESSING = "processing", "processing in progress"
         DONE = "done", "processing is done"
 
-    model_type = models.CharField(_("the type of pretrained model"), max_length=64,
-                                  choices=classificators.get_model_types())
     # TODO:
     #  - [ ] define a path to store?
     #  - [ ] delete images after processing

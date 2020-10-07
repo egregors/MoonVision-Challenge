@@ -51,4 +51,3 @@ class InferenceViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, Gener
     def perform_create(self, serializer):
         instance = serializer.save()
         run_inference.delay(instance.id)
-

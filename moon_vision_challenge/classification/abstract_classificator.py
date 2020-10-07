@@ -9,13 +9,14 @@ logger = logging.getLogger(__name__)
 
 class Classificator(ABC):
     """ The base classificator meta class. All implementations should be inheritance from this one.
-    Required implementation `preprocess_input` and `decode_predictions` methods.
+    Required implementation `preprocess_input`, 'process_prediction' and `decode_predictions` methods.
 
     Each Classificator must define
         `model_type` – the type of pretrained model, like resnet, vgg, mobilenet, etc;
         `model_url` – url to access tensorflow-serving API for particular model.
     """
 
+    # TODO: URL could be get by concatenate BASE_MODEL_URL and model_type
     model_type: str
     model_url: str
 
@@ -28,16 +29,18 @@ class Classificator(ABC):
         Convert Image to proper type according ML-model signature.
 
         :param image: PIL Image object
-        :return: Object which expected by ML-model
+        :return: An object which expected by ML-model
         """
         raise NotImplementedError()
 
     @abstractmethod
     def process_prediction(self, input_vector: Any) -> Dict:
         """
+        Define a payload for request to TF-serving REST API.
+        Payload should contain fields according model input signature.
 
-        :param input_vector:
-        :return:
+        :param input_vector: An object which expected by ML-model
+        :return: Unmarshalled JSON response from TF-serving REST API
         """
         raise NotImplementedError()
 

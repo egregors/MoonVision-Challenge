@@ -39,6 +39,9 @@ class DefaultClassificatorDispatcher(BaseClassificatorDispatcher):
         if getattr(classificator.preprocess_input, '__isabstractmethod__', False):
             raise ValueError('`preprocess_input` method is required')
 
+        if getattr(classificator.process_prediction, '__isabstractmethod__', False):
+            raise ValueError('`preprocess_input` method is required')
+
         if getattr(classificator.decode_predictions, '__isabstractmethod__', False):
             raise ValueError('`decode_predictions` method is required')
 

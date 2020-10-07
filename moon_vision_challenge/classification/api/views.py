@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 # TODO: add throttling
 class NaiveInferenceViewSet(mixins.CreateModelMixin, GenericViewSet):
-    """ Naive way to make quick prediction. This is a synchronous view. """
+    """ Naive way to make quick prediction. This is a synchronous prediction. """
 
     serializer_class = NaiveInferenceSerializer
     permission_classes = [AllowAny]
@@ -42,24 +42,13 @@ class NaiveInferenceViewSet(mixins.CreateModelMixin, GenericViewSet):
 
 
 class InferenceViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, GenericViewSet):
-    """ TODO: this """
+    """ Create an Inference to predict and run async task to calculate it. """
 
     serializer_class = InferenceSerializer
     permission_classes = [AllowAny]
     queryset = Inference.objects.all()
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
-
     def perform_create(self, serializer):
         instance = serializer.save()
         run_inference.delay(instance.id)
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED, headers=headers)

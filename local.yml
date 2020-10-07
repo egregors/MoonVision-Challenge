@@ -17,7 +17,6 @@ services:
       - '--model_config_file=/models/models.config'
       - '--model_config_file_poll_wait_seconds=10'
 
-
   django: &django
     build:
       context: .

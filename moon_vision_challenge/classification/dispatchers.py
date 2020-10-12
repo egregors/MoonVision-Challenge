@@ -11,7 +11,7 @@ class BaseClassificatorDispatcher(ABC):
     """ Meta class for all Dispatchers """
 
     @abstractmethod
-    def register(self, classificator: Classificator):
+    def register(self, classificator: Type[Classificator]):
         raise NotImplementedError()
 
 

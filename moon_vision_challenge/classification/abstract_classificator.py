@@ -8,7 +8,8 @@ logger = logging.getLogger(__name__)
 
 
 class Classificator(ABC):
-    """ The base classificator meta class. All implementations should be inheritance from this one.
+    """
+    The base classificator meta class. All implementations should be inheritance from this one.
     Required implementation `preprocess_input`, 'process_prediction' and `decode_predictions` methods.
 
     Each Classificator must define

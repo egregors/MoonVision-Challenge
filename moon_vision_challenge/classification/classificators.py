@@ -37,9 +37,7 @@ class ResNetClassificator(Classificator):
         r = requests.post(url=self.model_url, json=payload)
 
         if r.status_code != status.HTTP_200_OK:
-            raise TensorFlowServingException(
-                "Wrong Response from TF-serving: %s", r.content.decode('utf-8')
-            )
+            raise TensorFlowServingException("Wrong Response from TF-serving: %s", r.content.decode('utf-8'))
 
         return json.loads(r.content.decode('utf-8'))
 
@@ -83,9 +81,7 @@ class InceptionClassificator(Classificator):
         if r.status_code != status.HTTP_200_OK:
             raise TensorFlowServingException("Wrong Response from TF-serving: %s", r.content.decode('utf-8'))
 
-        res = json.loads(r.content.decode('utf-8'))
-
-        return res
+        return json.loads(r.content.decode('utf-8'))
 
     def decode_predictions(self, pred: Dict) -> str:
         return pred['predictions'][0]['classes'][0]

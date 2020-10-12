@@ -17,6 +17,10 @@ up:  ## Run server and shows logs
 down:  ## Stop services
 	docker-compose -f local.yml down
 
+lint:  ## Lint and type check
+		docker-compose -f local.yml run --rm django flake8 --ignore=I005,I001
+		docker-compose -f local.yml run --rm django mypy moon_vision_challenge/
+
 ## Help
 
 help: ## Show help message

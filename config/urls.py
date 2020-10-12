@@ -5,10 +5,8 @@ from django.urls import include, path
 from django.views import defaults as default_views
 from rest_framework.authtoken.views import obtain_auth_token
 
-urlpatterns = [
-                  # Django Admin, use {% url 'admin:index' %}
-                  path(settings.ADMIN_URL, admin.site.urls),
-               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns = [path(settings.ADMIN_URL, admin.site.urls)] + static(settings.MEDIA_URL,
+                                                                   document_root=settings.MEDIA_ROOT)
 
 # API URLS
 urlpatterns += [

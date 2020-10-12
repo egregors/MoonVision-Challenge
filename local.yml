@@ -26,7 +26,6 @@ services:
     container_name: django
     depends_on:
       - postgres
-      - tensorflow-serving
     volumes:
       - .:/app:z
     env_file:

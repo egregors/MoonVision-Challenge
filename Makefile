@@ -11,7 +11,7 @@ build: get_tf_models ## Get TF models and build services
 	docker-compose -f local.yml build
 
 up:  ## Run server and shows logs
-	docker-compose -f local.yml run --rm django ./manage.py migrate --no-input
+	docker-compose -f local.yml run --rm django python manage.py migrate --no-input
 	docker-compose -f local.yml up -d && docker-compose -f local.yml logs -f --tail=100
 
 down:  ## Stop services

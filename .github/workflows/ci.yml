@@ -55,7 +55,7 @@ jobs:
         run:  docker-compose -f local.yml up -d
 
       - name: Run Django Tests
-        run:  docker-compose -f local.yml exec -e DATABASE_URL=${DATABASE_URL} -T django pytest .
+        run:  docker-compose -f local.yml exec -e DATABASE_URL=${DATABASE_URL} -e CELERY_BROKER_URL=${REDIS_URL} -T django pytest .
 
       - name: Tear down the Stack
         run:  docker-compose down

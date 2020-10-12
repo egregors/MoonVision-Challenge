@@ -7,6 +7,7 @@ volumes:
 services:
   tensorflow-serving:
     image: 'tensorflow/serving'
+    container_name: tensorflow
     ports:
       - '8500:8500'
       - '8501:8501'

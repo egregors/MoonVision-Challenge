@@ -219,6 +219,7 @@ build                Get TF models and build services
 up                   Run server and shows logs
 down                 Stop services
 lint                 Lint and type check
+test                 Run tests
                      
 help                 Show help message
 ```

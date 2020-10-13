@@ -6,6 +6,19 @@ volumes:
   production_traefik: {}
 
 services:
+  tensorflow-serving:
+    image: 'tensorflow/serving'
+    container_name: tensorflow
+    ports:
+      - '8500:8500'
+      - '8501:8501'
+    volumes:
+      - '/tmp/model-data:/models'
+    entrypoint:
+      - '/usr/bin/tf_serving_entrypoint.sh'
+      - '--model_config_file=/models/models.config'
+      - '--model_config_file_poll_wait_seconds=10'
+
   django: &django
     build:
       context: .
@@ -62,4 +75,4 @@ services:
     image: moon_vision_challenge_production_flower
     command: /start-flower
 
-  
+

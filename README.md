@@ -1,4 +1,4 @@
-# Django REST endpoint for image classification.
+# Django REST endpoint for image classification
 
 ### Models-serving
 For models serving is used [TensorFlow Serving](https://www.tensorflow.org/tfx/guide/serving) 
@@ -25,6 +25,18 @@ model_config_list {
 The main idea for my architect decision is to give a consumer a way to simple and flexible work with different model types.
 For this purpose, I have implemented a few abstractions for describing `Classificator` entity, which provides a common interface 
 for all `Classificators` and `Dispatcher` to dynamic dispatching requests inside API view or async tasks.
+
+The whole system represents in [local.yml](https://github.com/egregors/MoonVision-Challenge/blob/master/moon_vision_challenge/local.yml)
+and contain 7 services: 
+
+* `tensorflow-serving` – container with official `tensorflow/serving`
+* `django` – the main app 
+* `postgres` – persistent store
+* `redis` – kv-store for queue broker
+* `celeryworker` – queue worker
+* `celerybeat` – worker for cron-like tasks
+* `flower` – tool for queue monitoring
+* **(production)** `traefik` – reverse proxy with SSL
 
 #### Classificator
 
@@ -139,6 +151,13 @@ Payload example:
 }
 ```
 
+Response example:
+```json5
+{
+    "label": "albatross"
+}
+```
+
 #### v1 – Asynchronous entrypoint with queue
 
 `Allow: POST, OPTIONS`
@@ -156,7 +175,7 @@ class STATUS(models.TextChoices):
     DONE = "done", "processing is done"
 ```
 
-Details of `Inference` model could be found in [views.py](https://github.com/egregors/MoonVision-Challenge/blob/master/moon_vision_challenge/classification/models.py)
+Details of `Inference` model could be found in [models.py](https://github.com/egregors/MoonVision-Challenge/blob/master/moon_vision_challenge/classification/models.py)
 
 This entry point expect the same input payload format as `api/v0`, however much more suitable for scaling, providing data security, monitoring.
 

@@ -225,7 +225,14 @@ For example:
 # Future improvements
 
 I believe the second solution (`api/v1/` async view) is already have good potential for scaling. 
-Though I should add caching for view, pay more attention to throttling configuration, and add more tooling for consumers.
+Though I should:
+
+* add caching for view
+* pay more attention to throttling configuration
+* add monitoring and autoscaling
+* add more tooling for consumers
+* increase test coverage
+* add integration tests
 
 # Build
 

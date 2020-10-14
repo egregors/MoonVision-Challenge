@@ -22,4 +22,4 @@ django-cors-headers==3.5.0 # https://github.com/adamchainz/django-cors-headers
 # ML
 # ------------------------------------------------------------------------------
 Keras==2.4.3
-tensorflow==2.3.0
+tensorflow==2.3.1

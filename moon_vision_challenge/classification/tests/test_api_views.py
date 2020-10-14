@@ -1,4 +1,3 @@
-from django.conf import settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -26,24 +25,6 @@ class NaiveInferenceTestCase(APITestCase):
 
         r = self.client.post(path=self.inferences_url, data={}, format='json')
         self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_bad_image_format(self):
-        payload = {
-            "model_type": "resnet",
-            "image": open(settings.APPS_DIR / 'classification/tests/fixtures/bad_boy.jpg', 'rb')
-        }
-        r = self.client.post(self.inferences_url, data=payload, format='multipart')
-        self.assertEqual(r.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
-        self.assertEqual(r.data['detail'], "can't make prediction: cannot write mode RGBA as JPEG")
-
-    def test_success_predict(self):
-        payload = {
-            "model_type": "resnet",
-            "image": open(settings.APPS_DIR / 'classification/tests/fixtures/cat.jpg', 'rb')
-        }
-        r = self.client.post(self.inferences_url, data=payload, format='multipart')
-        self.assertEqual(r.status_code, status.HTTP_200_OK)
-        self.assertEqual(r.data['label'], "tiger_cat")
 
 
 class AsyncInferenceTestCase(APITestCase):

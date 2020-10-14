@@ -27,6 +27,7 @@ services:
     depends_on:
       - postgres
       - redis
+      - tensorflow-serving
     env_file:
       - ./.envs/.production/.django
       - ./.envs/.production/.postgres

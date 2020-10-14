@@ -12,9 +12,6 @@ urlpatterns = [path(settings.ADMIN_URL, admin.site.urls)] + static(settings.MEDI
 urlpatterns += [
     # API base url
     path("api/", include("config.api_router")),
-    # TODO: add auth for prod demo
-    # DRF auth token
-    path("auth-token/", obtain_auth_token),
 ]
 
 if settings.DEBUG:
@@ -38,7 +35,3 @@ if settings.DEBUG:
         ),
         path("500/", default_views.server_error),
     ]
-    if "debug_toolbar" in settings.INSTALLED_APPS:
-        import debug_toolbar
-
-        urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns

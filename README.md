@@ -1,6 +1,17 @@
 # Django REST endpoint for image classification
 
-### Models-serving
+- [Models-serving](#models-serving)
+- [Core](#core)
+  - [Classificator](#classificator)
+  - [Dispatcher](#dispatcher)
+- [REST API](#rest-api)
+  - [v0 – Naive synchronous entrypoint](#v0--naive-synchronous-entrypoint)
+  - [v1 – Asynchronous entrypoint with queue](#v1--asynchronous-entrypoint-with-queue)
+- [Future improvements](#future-improvements)
+- [Build](#build)
+- [Lint | Tests](#lint--tests)
+
+## Models-serving
 For models serving is used [TensorFlow Serving](https://www.tensorflow.org/tfx/guide/serving) 
 with two pre-trained models: [resnet and inception](https://moon-vision-demo.s3.eu-central-1.amazonaws.com/model-data.tar.gz) 
 according `models.config`:
@@ -20,7 +31,7 @@ model_config_list {
 }
 ```
 
-### Core
+## Core
 
 The main idea for my architect decision is to give a consumer a way to simple and flexible work with different model types.
 For this purpose, I have implemented a few abstractions for describing `Classificator` entity, which provides a common interface 
@@ -38,7 +49,7 @@ and contain 7 services:
 * `flower` – tool for queue monitoring
 * **(production)** `traefik` – reverse proxy with SSL
 
-#### Classificator
+### Classificator
 
 The abstract `Classificator` implementation could be found in [abstract_classificator.py](https://github.com/egregors/MoonVision-Challenge/blob/master/moon_vision_challenge/classification/abstract_classificator.py)
 A consumer should set `model_type`, `model_url` (internal tensorflow-serving URL) and implement all required methods: 
@@ -78,7 +89,7 @@ That's all! All registered classificators will be able for dispatching after Dja
 
 Check out the full examples in [classificators.py](https://github.com/egregors/MoonVision-Challenge/blob/master/moon_vision_challenge/classification/classificators.py)
 
-#### Dispatcher
+### Dispatcher
 
 A `Dispatcher` is an abstraction that auto-discover (`classificators.py` files in any app) and contain all registered `Classificators`.
 This way provides dynamic defining full lifecycle of prediction according to the chosen model type.
@@ -87,11 +98,11 @@ An implementation of `Dispatcher` could be found in [dispatchers.py](https://git
 
 Like a `Classificator`, `Dispatcher` expose base abstract class as well. It gives a consumer way to define their own dispatcher.
 
-### REST API
+# REST API
 
 There are an implementation of two different ways to solve this problem. 
 
-#### v0 – Naive synchronous entrypoint
+## v0 – Naive synchronous entrypoint
 
 `Allow: POST, OPTIONS`
 `Content-Type: application/json`
@@ -158,7 +169,7 @@ Response example:
 }
 ```
 
-#### v1 – Asynchronous entrypoint with queue
+## v1 – Asynchronous entrypoint with queue
 
 `Allow: POST, OPTIONS`
 `Content-Type: application/json`
@@ -211,12 +222,12 @@ For example:
 }
 ```
 
-### Future improvements
+# Future improvements
 
 I believe the second solution (`api/v1/` async view) is already have good potential for scaling. 
 Though I should add caching for view, pay more attention to throttling configuration, and add more tooling for consumers.
 
-## Build
+# Build
 
 * Download pre-trained models and build containers: `make build`
 
@@ -243,7 +254,7 @@ test                 Run tests
 help                 Show help message
 ```
 
-### Lint | Tests
+# Lint | Tests
 
 Run linter and mypy: `make lint`
 

@@ -92,7 +92,7 @@ Check out the full examples in [classificators.py](https://github.com/egregors/M
 ### Dispatcher
 
 A `Dispatcher` is an abstraction that auto-discover (`classificators.py` files in any app) and contain all registered `Classificators`.
-This way provides dynamic defining full lifecycle of prediction according to the chosen model type.
+This way provides dynamic definition full lifecycle of prediction according to the chosen model type.
 
 An implementation of `Dispatcher` could be found in [dispatchers.py](https://github.com/egregors/MoonVision-Challenge/blob/master/moon_vision_challenge/classification/dispatchers.py)
 
@@ -100,7 +100,7 @@ Like a `Classificator`, `Dispatcher` expose base abstract class as well. It give
 
 # REST API
 
-There are an implementation of two different ways to solve this problem. 
+There is an implementation of two different ways to solve this problem. 
 
 ## v0 – Naive synchronous entrypoint
 
@@ -174,7 +174,7 @@ Response example:
 `Allow: POST, OPTIONS`
 `Content-Type: application/json`
 
-The async entry point is creating `Celery` task for each request and put it in the queue. Then, `celeryworker's` receive tasks and perform prediction
+The async entry point is creating `Celery` task for each request and put it in the queue. Then, `celeryworkers` receive tasks and perform prediction
 as usual (by a dispatcher). Each `Inference.status` could be:
 
 ```python
